@@ -2,59 +2,220 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Quadrature | System Standby</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>THE QUADRATURE // APERTURE GATEWAY</title>
     <style>
-        body {
+        /* === RESET & FOUNDATION === */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
             background-color: #000000;
-            color: #ffffff;
-            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            touch-action: none;
+            user-select: none;
+        }
+
+        /* === CHROMATIC ABERRATION AESTHETIC === */
+        .chromatic {
+            font-family: 'Courier New', Courier, monospace;
+            color: #FDF9F1;
+            text-shadow: -1.5px 0px 1px rgba(0, 240, 255, 0.8), 1.5px 0px 1px rgba(255, 0, 60, 0.8);
             text-align: center;
-            letter-spacing: 4px;
+            white-space: nowrap;
         }
-        .container {
-            max-width: 600px;
-            padding: 20px;
+
+        /* === TERMINAL CRAWL SEQUENCE === */
+        #terminal-crawl {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: opacity 0.8s ease-out;
+            width: 100%;
         }
-        h1 {
-            font-weight: normal;
-            font-size: 1.5rem;
+
+        .term-title {
+            font-size: 1.8rem;
             letter-spacing: 12px;
-            margin-bottom: 20px;
-            text-transform: uppercase;
+            font-weight: bold;
+            margin-bottom: 40px;
         }
-        p {
-            font-size: 0.8rem;
-            color: #888888;
-            line-height: 1.8;
+
+        .term-subtitle {
+            font-size: 0.85rem;
             letter-spacing: 6px;
+            margin-bottom: 20px;
+            opacity: 0.9;
         }
-        .cursor {
-            display: inline-block;
-            width: 10px;
-            height: 1.2em;
-            background-color: #ffffff;
-            vertical-align: middle;
-            animation: blink 1s step-end infinite;
-            margin-left: 5px;
+
+        #telemetry-data {
+            margin-top: 40px;
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            line-height: 2;
+            opacity: 0.7;
+            text-align: center;
         }
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
+
+        /* === 4-BLADE KINETIC MECHANICAL IRIS === */
+        #iris-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 10;
+            pointer-events: none;
+            visibility: hidden; /* Hidden until terminal finishes */
+        }
+
+        .blade {
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+            background: #020202;
+            border: 1px solid rgba(0, 240, 255, 0.15);
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.9);
+            /* Kinetic acceleration curve for opening */
+            transition: transform 1.8s cubic-bezier(0.8, 0.05, 0.2, 1);
+        }
+
+        /* Diagonal Blade Cuts */
+        .blade-top    { clip-path: polygon(0 0, 100% 0, 50% 50%); transform-origin: center top; }
+        .blade-right  { clip-path: polygon(100% 0, 100% 100%, 50% 50%); transform-origin: right center; }
+        .blade-bottom { clip-path: polygon(100% 100%, 0 100%, 50% 50%); transform-origin: center bottom; }
+        .blade-left   { clip-path: polygon(0 100%, 0 0, 50% 50%); transform-origin: left center; }
+
+        /* Iris Open State */
+        .iris-open .blade-top    { transform: translateY(-100%); }
+        .iris-open .blade-right  { transform: translateX(100%); }
+        .iris-open .blade-bottom { transform: translateY(100%); }
+        .iris-open .blade-left   { transform: translateX(-100%); }
+
+        /* === CENTRAL 'Q' & BLUR MODE ACCELERATION === */
+        #central-q {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            font-size: 10rem;
+            font-weight: normal;
+            z-index: 20;
+            opacity: 0;
+            /* Logarithmic acceleration curve */
+            transition: transform 1.5s cubic-bezier(0.55, 0.05, 0.68, 0.19), 
+                        filter 1.5s ease-in, 
+                        opacity 0.8s ease-in;
+        }
+
+        .q-blur-mode {
+            transform: translate(-50%, -50%) scale(40) !important;
+            filter: blur(25px) !important;
+            opacity: 0 !important;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .term-title { font-size: 1.2rem; letter-spacing: 8px; }
+            .term-subtitle { font-size: 0.6rem; letter-spacing: 4px; white-space: normal; line-height: 2; padding: 0 10px; }
+            #telemetry-data { font-size: 0.55rem; letter-spacing: 2px; }
+            #central-q { font-size: 8rem; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>THE QUADRATURE<span class="cursor"></span></h1>
-        <p>SYSTEM INITIALIZATION IN PROGRESS</p>
-        <p>STANDBY FOR NODE SYNCHRONIZATION</p>
+
+    <div id="terminal-crawl">
+        <div class="chromatic term-title">T H E &nbsp; Q U A D R A T U R E</div>
+        <div class="chromatic term-subtitle">S Y S T E M &nbsp; I N I T I A L I Z A T I O N &nbsp; I N &nbsp; P R O G R E S S</div>
+        <div class="chromatic term-subtitle">S T A N D B Y &nbsp; F O R &nbsp; N O D E &nbsp; S Y N C H R O N I Z A T I O N</div>
+        
+        <div id="telemetry-data" class="chromatic">
+            > ACQUIRING BARYCENTRIC LOCK...<br>
+            > MEM: -- MB<br>
+            > PING: -- ms
+        </div>
     </div>
+
+    <div id="iris-container">
+        <div class="blade blade-top"></div>
+        <div class="blade blade-right"></div>
+        <div class="blade blade-bottom"></div>
+        <div class="blade blade-left"></div>
+    </div>
+    
+    <div id="central-q" class="chromatic">Q</div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const teleData = document.getElementById("telemetry-data");
+            const terminalCrawl = document.getElementById("terminal-crawl");
+            const irisContainer = document.getElementById("iris-container");
+            const centralQ = document.getElementById("central-q");
+
+            // --- 1. LIVE TELEMETRY SIMULATION (3 SECONDS) ---
+            let memoryBase = 1024;
+            const teleInterval = setInterval(() => {
+                const ping = Math.floor(Math.random() * 6) + 11; // 11-16ms flutter
+                const memory = (memoryBase + (Math.random() * 128)).toFixed(2);
+                
+                // Grounded to Architect's localized coordinate (Clearwater, FL)
+                teleData.innerHTML = `
+                    > LOCAL_COORD: 27.9659° N, 82.8001° W<br>
+                    > SYS_MEM_ALLOC: ${memory} MB [STABLE]<br>
+                    > BARYCENTRIC_PING: ${ping}ms
+                `;
+            }, 80);
+
+            // --- 2. SEQUENCE TIMING & KINETIC TRANSITIONS ---
+            setTimeout(() => {
+                // Halt telemetry & fade out terminal text
+                clearInterval(teleInterval);
+                terminalCrawl.style.opacity = "0";
+                
+                // Prepare Iris & Q
+                irisContainer.style.visibility = "visible";
+                
+                setTimeout(() => {
+                    // Fade in Central Q
+                    centralQ.style.opacity = "1";
+                    centralQ.style.transform = "translate(-50%, -50%) scale(1)";
+
+                    setTimeout(() => {
+                        // Trigger Logarithmic Blur & Iris Retraction
+                        centralQ.classList.add("q-blur-mode");
+                        document.body.classList.add("iris-open");
+
+                        // Mobile Bridge Nav Logic (Native App Handshake)
+                        if (window.ReactNativeWebView) {
+                            window.ReactNativeWebView.postMessage(JSON.stringify({ 
+                                action: 'GATEWAY_OPENED',
+                                payload: { status: 'TRUE_ELLIPSE_LOCKED' }
+                            }));
+                        }
+
+                        // Terminal Routing to Master UI
+                        setTimeout(() => {
+                            window.location.href = "index.html?v=16.4.0";
+                        }, 1600); // Fires just as the blur envelops the screen
+
+                    }, 900); // Hold the Q steady for a fraction of a second
+                }, 800); // Wait for terminal fade out
+
+            }, 3000); // Exact 3-Second initialization crawl per manifest
+        });
+    </script>
 </body>
 </html>
