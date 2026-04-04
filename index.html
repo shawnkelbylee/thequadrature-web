@@ -7,13 +7,16 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;700&family=Orbitron:wght@400;700;900&display=swap');
 
-        /* BASE SOVEREIGN AESTHETIC */
+        /* --- CORE VARIABLES --- */
         :root {
             --bg: #000000;
             --fg: #FFFFFF;
+            --dim: rgba(255, 255, 255, 0.4);
+            --grid: rgba(255, 255, 255, 0.05);
             --font-data: 'JetBrains Mono', monospace;
             --font-display: 'Orbitron', sans-serif;
-            --border-strict: 1px solid #FFFFFF;
+            --border-hud: 1px solid rgba(255, 255, 255, 0.2);
+            --hud-glow: 0 0 10px rgba(255, 255, 255, 0.2);
         }
 
         * {
@@ -33,120 +36,151 @@
             position: relative;
         }
 
-        /* --- MICRO-ACCENTS & CROSSHAIRS --- */
-        .crosshair {
+        /* --- CRT & GRID OVERLAYS --- */
+        .grid-overlay {
             position: absolute;
-            width: 20px;
-            height: 20px;
-            z-index: 10;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, var(--grid) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
+            z-index: 0;
+            pointer-events: none;
         }
-        .ch-tl { top: 15px; left: 15px; border-top: var(--border-strict); border-left: var(--border-strict); }
-        .ch-tr { top: 15px; right: 15px; border-top: var(--border-strict); border-right: var(--border-strict); }
-        .ch-bl { bottom: 15px; left: 15px; border-bottom: var(--border-strict); border-left: var(--border-strict); }
-        .ch-br { bottom: 15px; right: 15px; border-bottom: var(--border-strict); border-right: var(--border-strict); }
 
-        .sys-tag {
-            position: absolute;
-            font-size: 0.65rem;
-            letter-spacing: 2px;
-            opacity: 0.6;
-        }
-        .tag-top { top: 20px; left: 50%; transform: translateX(-50%); }
-        .tag-bot { bottom: 20px; left: 50%; transform: translateX(-50%); }
-
-        /* --- CONNECTIVE GEOMETRY --- */
-        .geometry-overlay {
+        .scanlines {
             position: absolute;
             top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 3px 100%;
+            z-index: 100;
             pointer-events: none;
-            z-index: 1;
-        }
-        line {
-            stroke: var(--fg);
-            stroke-width: 1;
-            stroke-dasharray: 4 4;
             opacity: 0.3;
         }
 
-        /* --- OS WINGS (TELEMETRY) --- */
+        /* --- HEADER & FOOTER ANCHORS --- */
+        .sys-header, .sys-footer {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-family: var(--font-display);
+            letter-spacing: 4px;
+            z-index: 50;
+            text-transform: uppercase;
+        }
+        .sys-header {
+            top: 20px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-shadow: var(--hud-glow);
+        }
+        .sys-footer {
+            bottom: 20px;
+            font-size: 0.65rem;
+            font-family: var(--font-data);
+            opacity: 0.5;
+            letter-spacing: 2px;
+        }
+
+        /* --- HUD CORNER BRACKETS --- */
+        .hud-bracket {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            z-index: 40;
+        }
+        .br-tl { top: 20px; left: 20px; border-top: 2px solid var(--fg); border-left: 2px solid var(--fg); }
+        .br-tr { top: 20px; right: 20px; border-top: 2px solid var(--fg); border-right: 2px solid var(--fg); }
+        .br-bl { bottom: 20px; left: 20px; border-bottom: 2px solid var(--fg); border-left: 2px solid var(--fg); }
+        .br-br { bottom: 20px; right: 20px; border-bottom: 2px solid var(--fg); border-right: 2px solid var(--fg); }
+
+        /* --- OS WINGS (TELEMETRY PANELS) --- */
         .os-wing {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            width: 220px;
+            width: 280px;
+            height: 60vh;
             display: flex;
             flex-direction: column;
-            gap: 2rem;
+            justify-content: space-between;
             z-index: 20;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            border: var(--border-hud);
+            backdrop-filter: blur(4px);
         }
-        .wing-left { left: 40px; }
-        .wing-right { right: 40px; text-align: right; }
+        .wing-left { left: 40px; border-left: 2px solid var(--fg); }
+        .wing-right { right: 40px; border-right: 2px solid var(--fg); text-align: right; }
 
-        .telemetry-block {
+        .telemetry-row {
             display: flex;
             flex-direction: column;
+            margin-bottom: 15px;
         }
-        .wing-left .telemetry-block { border-left: 2px solid var(--fg); padding-left: 10px; }
-        .wing-right .telemetry-block { border-right: 2px solid var(--fg); padding-right: 10px; }
+        .wing-left .telemetry-row { align-items: flex-start; }
+        .wing-right .telemetry-row { align-items: flex-end; }
 
-        .tel-label {
+        .data-label {
             font-family: var(--font-display);
-            font-size: 0.7rem;
+            font-size: 0.65rem;
+            color: var(--dim);
             letter-spacing: 1px;
-            opacity: 0.8;
-            margin-bottom: 5px;
-            text-transform: uppercase;
+            margin-bottom: 2px;
         }
-        .tel-data {
-            font-size: 1.2rem;
+        .data-value {
+            font-size: 1.1rem;
             font-weight: 700;
-        }
-        .tel-sub {
-            font-size: 0.55rem;
-            opacity: 0.5;
-            margin-top: 2px;
+            letter-spacing: 1px;
+            text-shadow: var(--hud-glow);
         }
 
-        /* --- THE FOUR GATEWAY VECTORS --- */
-        .gateway-vector {
+        /* --- THE 4 CORNER VECTORS --- */
+        .vector-node {
             position: absolute;
-            width: 260px;
-            height: 90px;
-            border: var(--border-strict);
+            width: 280px;
+            padding: 15px 20px;
             background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            border: var(--border-hud);
             cursor: pointer;
-            z-index: 20;
-            transition: all 0.3s ease;
-        }
-        .gateway-vector:hover {
-            background: var(--fg);
-            color: var(--bg);
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            z-index: 30;
+            transition: all 0.2s ease-out;
+            overflow: hidden;
         }
         
-        /* Absolute Corner Anchoring */
-        .vec-tl { top: 80px; left: 320px; }
-        .vec-tr { top: 80px; right: 320px; }
-        .vec-bl { bottom: 80px; left: 320px; }
-        .vec-br { bottom: 80px; right: 320px; }
+        /* Interactive Bracket Hover */
+        .vector-node::before, .vector-node::after {
+            content: ''; position: absolute; width: 10px; height: 10px; transition: all 0.2s ease;
+        }
+        .vector-node::before { top: 0; left: 0; border-top: 1px solid var(--fg); border-left: 1px solid var(--fg); }
+        .vector-node::after { bottom: 0; right: 0; border-bottom: 1px solid var(--fg); border-right: 1px solid var(--fg); }
+        
+        .vector-node:hover {
+            border-color: var(--fg);
+            box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+        .vector-node:hover::before { width: 100%; height: 100%; }
+        .vector-node:hover::after { width: 100%; height: 100%; }
 
+        /* Absolute Corner Anchoring */
+        .vec-tl { top: 80px; left: 350px; }
+        .vec-tr { top: 80px; right: 350px; text-align: right; }
+        .vec-bl { bottom: 80px; left: 350px; }
+        .vec-br { bottom: 80px; right: 350px; text-align: right; }
+
+        .vec-id {
+            font-size: 0.6rem;
+            color: var(--dim);
+            margin-bottom: 4px;
+        }
         .vec-title {
             font-family: var(--font-display);
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 700;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
             text-transform: uppercase;
         }
-        .vec-status {
-            font-size: 0.6rem;
-            margin-top: 5px;
-            opacity: 0.7;
-        }
-        .gateway-vector:hover .vec-status { opacity: 1; color: var(--bg); }
 
         /* --- THE APERTURE IRIS (CENTER DIAL) --- */
         .center-stage {
@@ -154,35 +188,36 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 450px;
-            height: 450px;
+            width: 480px;
+            height: 480px;
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 15;
         }
 
-        .macro-ring {
+        /* Structural Rings */
+        .dial-ring {
             position: absolute;
             border-radius: 50%;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
-        .ring-1 { width: 100%; height: 100%; border: 1px dashed rgba(255, 255, 255, 0.5); animation: spinZ 120s linear infinite reverse; }
-        .ring-2 { width: 85%; height: 85%; border: var(--border-strict); }
-        .ring-3 { width: 70%; height: 70%; border-width: 2px; }
+        .ring-outer { width: 100%; height: 100%; border: 1px dashed rgba(255, 255, 255, 0.3); animation: rotateSlow 60s linear infinite; }
+        .ring-mid { width: 88%; height: 88%; border: 1px solid rgba(255, 255, 255, 0.4); }
+        .ring-inner { width: 75%; height: 75%; border: 2px solid var(--fg); box-shadow: 0 0 30px rgba(255, 255, 255, 0.1) inset; }
 
-        .iris-core {
+        /* The Void/Iris */
+        .iris-aperture {
             position: absolute;
-            width: 65%;
-            height: 65%;
+            width: 73%;
+            height: 73%;
             border-radius: 50%;
-            overflow: hidden;
             background: #000;
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: inset 0 0 40px rgba(255, 255, 255, 0.1);
-            transition: all 1.5s cubic-bezier(0.8, 0, 0.2, 1);
+            transition: all 1.2s cubic-bezier(0.7, 0, 0.3, 1);
         }
 
         .starfield {
@@ -190,183 +225,202 @@
             width: 200%;
             height: 200%;
             background-image: 
-                radial-gradient(1px 1px at 40px 60px, #fff, rgba(0,0,0,0)),
-                radial-gradient(1px 1px at 20px 50px, rgba(255,255,255,0.8), rgba(0,0,0,0)),
-                radial-gradient(2px 2px at 90px 100px, rgba(255,255,255,0.9), rgba(0,0,0,0)),
-                radial-gradient(1px 1px at 150px 160px, rgba(255,255,255,0.6), rgba(0,0,0,0)),
-                radial-gradient(1px 1px at 190px 40px, rgba(255,255,255,0.9), rgba(0,0,0,0));
+                radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1.5px 1.5px at 50px 80px, rgba(255,255,255,0.8), rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 90px 150px, rgba(255,255,255,0.9), rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 160px 120px, rgba(255,255,255,0.6), rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 200px 40px, rgba(255,255,255,0.9), rgba(0,0,0,0));
             background-repeat: repeat;
-            background-size: 200px 200px;
-            animation: spinZ 80s linear infinite;
+            background-size: 250px 250px;
+            animation: rotateSlow 120s linear infinite reverse;
             z-index: 1;
         }
 
         .rotating-q {
             font-family: var(--font-display);
-            font-size: 150px;
+            font-size: 160px;
             font-weight: 400;
-            z-index: 2;
             color: var(--fg);
-            animation: spinY 5s linear infinite;
+            z-index: 2;
+            animation: spinY 4s linear infinite;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
             transform-style: preserve-3d;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
         }
 
-        /* --- ANIMATIONS --- */
-        @keyframes spinZ {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        /* Connective Crosshairs (Center Stage) */
+        .dial-axis {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.2);
         }
-        @keyframes spinY {
-            from { transform: rotateY(0deg); }
-            to { transform: rotateY(360deg); }
-        }
+        .axis-x { width: 100%; height: 1px; top: 50%; }
+        .axis-y { width: 1px; height: 100%; left: 50%; }
 
-        /* --- KINETIC TRANSITION STATE (THE BREACH) --- */
-        body.breach-active .iris-core {
-            transform: scale(10);
+        /* --- ANIMATIONS & BREACH STATE --- */
+        @keyframes rotateSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes spinY { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
+
+        body.breach-active .iris-aperture {
+            transform: scale(15);
             opacity: 0;
+            border-radius: 0;
         }
         body.breach-active .rotating-q {
-            animation: spinY 0.15s linear infinite, blurOut 1.2s forwards;
+            animation: spinY 0.1s linear infinite, blurOut 1s forwards;
         }
-        body.breach-active .gateway-vector, 
+        body.breach-active .vector-node, 
         body.breach-active .os-wing, 
-        body.breach-active .geometry-overlay,
-        body.breach-active .macro-ring {
+        body.breach-active .dial-ring,
+        body.breach-active .sys-header,
+        body.breach-active .sys-footer {
             opacity: 0;
-            transition: opacity 1s ease;
+            transition: opacity 0.8s ease;
         }
 
         @keyframes blurOut {
-            0% { filter: blur(0px); opacity: 1; transform: scale(1) rotateY(0deg); }
-            100% { filter: blur(30px); opacity: 0; transform: scale(3) rotateY(1080deg); }
+            0% { filter: blur(0px); opacity: 1; }
+            100% { filter: blur(40px); opacity: 0; }
         }
-
     </style>
 </head>
 <body>
 
-    <div class="crosshair ch-tl"></div>
-    <div class="crosshair ch-tr"></div>
-    <div class="crosshair ch-bl"></div>
-    <div class="crosshair ch-br"></div>
-    
-    <div class="sys-tag tag-top">[ V16.4.0 : SOVEREIGN STATE ]</div>
-    <div class="sys-tag tag-bot">THE QUADRATURE : BARYCENTRIC OBSERVATION</div>
+    <div class="grid-overlay"></div>
+    <div class="scanlines"></div>
 
-    <svg class="geometry-overlay">
-        <line x1="450" y1="125" x2="50%" y2="50%" />
-        <line x1="calc(100vw - 450px)" y1="125" x2="50%" y2="50%" />
-        <line x1="450" y1="calc(100vh - 125px)" x2="50%" y2="50%" />
-        <line x1="calc(100vw - 450px)" y1="calc(100vh - 125px)" x2="50%" y2="50%" />
-    </svg>
+    <div class="hud-bracket br-tl"></div>
+    <div class="hud-bracket br-tr"></div>
+    <div class="hud-bracket br-bl"></div>
+    <div class="hud-bracket br-br"></div>
+
+    <div class="sys-header">THE QUADRATURE</div>
+    <div class="sys-footer">BASED IN SCIENCE, BATHED IN CULTURE AND BUILT FOR THE DIGITAL AGE.</div>
 
     <aside class="os-wing wing-left">
-        <div class="telemetry-block">
-            <div class="tel-label">Unix Epoch</div>
-            <div class="tel-data" id="tel-unix">0000000000</div>
-            <div class="tel-sub">1D INTEGER DRIFT</div>
+        <div class="telemetry-row">
+            <div class="data-label">SYS.EPOCH.UNIX</div>
+            <div class="data-value" id="wing-unix">0000000000</div>
         </div>
-        <div class="telemetry-block">
-            <div class="tel-label">Gregorian Ledger</div>
-            <div class="tel-data" id="tel-greg">YYYY-MM-DD</div>
-            <div class="tel-sub">CIVIL ESTIMATION</div>
+        <div class="telemetry-row">
+            <div class="data-label">SYS.CIVIL.GREGORIAN</div>
+            <div class="data-value" id="wing-greg">YYYY.MM.DD</div>
         </div>
-        <div class="telemetry-block">
-            <div class="tel-label">Thermodynamic Friction</div>
-            <div class="tel-data" style="color: #666;">UNRESOLVED</div>
-            <div class="tel-sub">BLIND TO PHYSICS</div>
+        <div class="telemetry-row">
+            <div class="data-label">SYS.CLOCK.UTC</div>
+            <div class="data-value" id="wing-utc">00:00:00</div>
+        </div>
+        <div class="telemetry-row">
+            <div class="data-label">SYS.JULIAN.DATE</div>
+            <div class="data-value" id="wing-julian">0000000.00</div>
+        </div>
+        <div class="telemetry-row" style="margin-top: auto;">
+            <div class="data-label" style="color: #ff3333;">SYS.TENSION.IDX</div>
+            <div class="data-value" style="color: #ff3333;">UNRESOLVED</div>
         </div>
     </aside>
 
     <aside class="os-wing wing-right">
-        <div class="telemetry-block">
-            <div class="tel-label">SSB Telemetry</div>
-            <div class="tel-data">LOCKED</div>
-            <div class="tel-sub">JPL HORIZONS SYNC</div>
+        <div class="telemetry-row">
+            <div class="data-label">Q.SSB.ANCHOR</div>
+            <div class="data-value">LOCKED</div>
         </div>
-        <div class="telemetry-block">
-            <div class="tel-label">True Ellipse (Pos)</div>
-            <div class="tel-data" id="tel-qcoord">000.0000°</div>
-            <div class="tel-sub">INVARIANT DEGREE</div>
+        <div class="telemetry-row">
+            <div class="data-label">Q.TRUE.ELLIPSE</div>
+            <div class="data-value" id="wing-qcoord">000.0000°</div>
         </div>
-        <div class="telemetry-block">
-            <div class="tel-label">Q-Delta Variance</div>
-            <div class="tel-data" id="tel-qdelta">+0.0000°</div>
-            <div class="tel-sub">TEMPORAL SYMMETRY LOSS</div>
+        <div class="telemetry-row">
+            <div class="data-label">Q.ORBIT.VELOCITY</div>
+            <div class="data-value">29.78 KM/S</div>
+        </div>
+        <div class="telemetry-row">
+            <div class="data-label">Q.SOLAR.PHASE</div>
+            <div class="data-value" id="wing-phase">CALCULATING</div>
+        </div>
+        <div class="telemetry-row" style="margin-top: auto;">
+            <div class="data-label" style="color: #33ff33;">Q.DELTA.VAR</div>
+            <div class="data-value" id="wing-qdelta" style="color: #33ff33;">+0.0000°</div>
         </div>
     </aside>
 
-    <div class="gateway-vector vec-tl" onclick="initiateBreach('PERSONAL QUAD')">
+    <div class="vector-node vec-tl" onclick="initiateBreach('PERSONAL QUAD')">
+        <div class="vec-id">[ VECTOR 01 ]</div>
         <div class="vec-title">Personal Quad</div>
-        <div class="vec-status">[ NODE 01 - ACTIVE ]</div>
     </div>
     
-    <div class="gateway-vector vec-tr" onclick="initiateBreach('COMMERCIAL QUAD')">
+    <div class="vector-node vec-tr" onclick="initiateBreach('COMMERCIAL QUAD')">
+        <div class="vec-id">[ VECTOR 02 ]</div>
         <div class="vec-title">Commercial Quad</div>
-        <div class="vec-status">[ NODE 02 - ENTERPRISE ]</div>
     </div>
     
-    <div class="gateway-vector vec-bl" onclick="initiateBreach('DOCUMENTS / MANUSCRIPTS')">
+    <div class="vector-node vec-bl" onclick="initiateBreach('DOCUMENTS/MANUSCRIPTS')">
+        <div class="vec-id">[ VECTOR 03 ]</div>
         <div class="vec-title">Docs / Manuscripts</div>
-        <div class="vec-status">[ THE ETERNAL NOW ]</div>
     </div>
     
-    <div class="gateway-vector vec-br" onclick="initiateBreach('GLOBAL DASHBOARD')">
+    <div class="vector-node vec-br" onclick="initiateBreach('GLOBAL DASHBOARD')">
+        <div class="vec-id">[ VECTOR 04 ]</div>
         <div class="vec-title">Global Dashboard</div>
-        <div class="vec-status">[ SYSTEMS OVERVIEW ]</div>
     </div>
 
     <div class="center-stage">
-        <div class="macro-ring ring-1"></div>
-        <div class="macro-ring ring-2"></div>
-        <div class="macro-ring ring-3"></div>
+        <div class="dial-axis axis-x"></div>
+        <div class="dial-axis axis-y"></div>
         
-        <div class="iris-core">
+        <div class="dial-ring ring-outer"></div>
+        <div class="dial-ring ring-mid"></div>
+        <div class="dial-ring ring-inner"></div>
+        
+        <div class="iris-aperture">
             <div class="starfield"></div>
             <div class="rotating-q">Q</div>
         </div>
     </div>
 
     <script>
-        // CORE RENDER LOOP: SIMULATED TELEMETRY FOR GATEWAY
-        function renderGatewayTelemetry() {
+        // HUD TELEMETRY ENGINE (Simulated pending q-core.js hook)
+        function calculateJulianDate(date) {
+            const time = date.getTime();
+            return (time / 86400000) + 2440587.5;
+        }
+
+        function renderHUD() {
             const now = new Date();
             
-            // Legacy Data
-            document.getElementById('tel-unix').innerText = Math.floor(now.getTime() / 1000);
-            document.getElementById('tel-greg').innerText = now.toISOString().split('T')[0];
+            // Legacy Wing Updates
+            document.getElementById('wing-unix').innerText = Math.floor(now.getTime() / 1000);
+            document.getElementById('wing-greg').innerText = now.toISOString().split('T')[0].replace(/-/g, '.');
+            document.getElementById('wing-utc').innerText = now.toISOString().split('T')[1].substring(0, 8);
+            document.getElementById('wing-julian').innerText = calculateJulianDate(now).toFixed(2);
             
-            // Simulated Barycentric Data (Visual Placeholder pending Core Engine Hook)
+            // Q-Wing Updates (Simulated Barycentric Math)
             const startOfYear = new Date(now.getFullYear(), 0, 1);
             const days = (now - startOfYear) / (1000 * 60 * 60 * 24);
             const rawDegree = (days / 365.25) * 360;
-            const delta = Math.sin(rawDegree * (Math.PI / 180)) * 1.5; 
+            const delta = Math.sin(rawDegree * (Math.PI / 180)) * 1.5;
             
-            document.getElementById('tel-qcoord').innerText = rawDegree.toFixed(4) + '°';
-            document.getElementById('tel-qdelta').innerText = (delta > 0 ? '+' : '') + delta.toFixed(4) + '°';
+            document.getElementById('wing-qcoord').innerText = rawDegree.toFixed(4) + '°';
+            document.getElementById('wing-qdelta').innerText = (delta > 0 ? '+' : '') + delta.toFixed(4) + '°';
+
+            // Sector logic
+            const sector = Math.floor(rawDegree / 90) + 1;
+            document.getElementById('wing-phase').innerText = `SECTOR ${sector}`;
             
-            requestAnimationFrame(renderGatewayTelemetry);
+            requestAnimationFrame(renderHUD);
         }
 
-        renderGatewayTelemetry();
+        renderHUD();
 
-        // KINETIC BREACH PROTOCOL
+        // KINETIC BREACH TRANSITION
         function initiateBreach(targetNode) {
             console.log(`[Q-OS] Initiating Sovereign Handshake. Routing to: ${targetNode}`);
             
-            // Trigger the CSS Kinetic Blur & Retraction
-            document.body.classList.add('breach-active');
+            const body = document.body;
+            body.classList.add('breach-active');
 
-            // Delay for animation completion before theoretical redirect
             setTimeout(() => {
                 alert(`[SYSTEM TRANSITION] Barycentric Lock Confirmed. Opening ${targetNode}...`);
-                // window.location.href = routeMap[targetNode];
-                
-                // Reset for continuous testing
-                document.body.classList.remove('breach-active');
-            }, 1800);
+                // window.location.href = targetURL;
+                body.classList.remove('breach-active');
+            }, 1200);
         }
     </script>
 </body>
