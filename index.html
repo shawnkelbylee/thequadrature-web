@@ -7,24 +7,16 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;700&family=Orbitron:wght@400;700;900&display=swap');
 
-        /* --- CORE VARIABLES --- */
+        /* VOID AESTHETIC - STARK BLACK & WHITE */
         :root {
             --bg: #000000;
             --fg: #FFFFFF;
-            --dim: rgba(255, 255, 255, 0.4);
-            --grid: rgba(255, 255, 255, 0.05);
             --font-data: 'JetBrains Mono', monospace;
             --font-display: 'Orbitron', sans-serif;
-            --border-hud: 1px solid rgba(255, 255, 255, 0.2);
-            --hud-glow: 0 0 10px rgba(255, 255, 255, 0.2);
+            --border-strict: 1px solid #FFFFFF;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            user-select: none;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
 
         body {
             background-color: var(--bg);
@@ -36,308 +28,178 @@
             position: relative;
         }
 
-        /* --- CRT & GRID OVERLAYS --- */
-        .grid-overlay {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-size: 40px 40px;
-            background-image: 
-                linear-gradient(to right, var(--grid) 1px, transparent 1px),
-                linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
-            z-index: 0;
-            pointer-events: none;
-        }
+        /* --- UNIVERSAL DOM SCALING --- */
+        
+        /* Crosshairs */
+        .crosshair { position: absolute; width: 20px; height: 20px; z-index: 10; }
+        .ch-tl { top: 15px; left: 15px; border-top: var(--border-strict); border-left: var(--border-strict); }
+        .ch-tr { top: 15px; right: 15px; border-top: var(--border-strict); border-right: var(--border-strict); }
+        .ch-bl { bottom: 15px; left: 15px; border-bottom: var(--border-strict); border-left: var(--border-strict); }
+        .ch-br { bottom: 15px; right: 15px; border-bottom: var(--border-strict); border-right: var(--border-strict); }
 
-        .scanlines {
-            position: absolute;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 4px, 3px 100%;
-            z-index: 100;
-            pointer-events: none;
-            opacity: 0.3;
-        }
-
-        /* --- HEADER & FOOTER ANCHORS --- */
+        /* Header & Footer */
         .sys-header, .sys-footer {
-            position: absolute;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            font-family: var(--font-display);
-            letter-spacing: 4px;
-            z-index: 50;
-            text-transform: uppercase;
+            position: absolute; left: 0; width: 100%; text-align: center;
+            font-family: var(--font-display); text-transform: uppercase; z-index: 50;
         }
-        .sys-header {
-            top: 20px;
-            font-size: 1.2rem;
-            font-weight: 700;
-            text-shadow: var(--hud-glow);
-        }
-        .sys-footer {
-            bottom: 20px;
-            font-size: 0.65rem;
-            font-family: var(--font-data);
-            opacity: 0.5;
-            letter-spacing: 2px;
-        }
+        .sys-header { top: 20px; font-size: 1.2rem; font-weight: 700; letter-spacing: 4px; }
+        .sys-footer { bottom: 20px; font-size: 0.65rem; font-family: var(--font-data); opacity: 0.5; letter-spacing: 2px; }
 
-        /* --- HUD CORNER BRACKETS --- */
-        .hud-bracket {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            z-index: 40;
+        /* Connective Geometry Overlay */
+        .geometry-overlay {
+            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none; z-index: 1;
         }
-        .br-tl { top: 20px; left: 20px; border-top: 2px solid var(--fg); border-left: 2px solid var(--fg); }
-        .br-tr { top: 20px; right: 20px; border-top: 2px solid var(--fg); border-right: 2px solid var(--fg); }
-        .br-bl { bottom: 20px; left: 20px; border-bottom: 2px solid var(--fg); border-left: 2px solid var(--fg); }
-        .br-br { bottom: 20px; right: 20px; border-bottom: 2px solid var(--fg); border-right: 2px solid var(--fg); }
+        line { stroke: var(--fg); stroke-width: 1; stroke-dasharray: 4 4; opacity: 0.3; }
 
-        /* --- OS WINGS (TELEMETRY PANELS) --- */
+        /* OS Wings (Telemetry) */
         .os-wing {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 280px;
-            height: 60vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            z-index: 20;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.6);
-            border: var(--border-hud);
-            backdrop-filter: blur(4px);
+            position: absolute; top: 50%; transform: translateY(-50%);
+            width: 280px; height: 60vh; display: flex; flex-direction: column;
+            justify-content: space-between; z-index: 20; padding: 20px;
+            background: transparent; border: var(--border-strict);
         }
-        .wing-left { left: 40px; border-left: 2px solid var(--fg); }
-        .wing-right { right: 40px; border-right: 2px solid var(--fg); text-align: right; }
+        .wing-left { left: 40px; }
+        .wing-right { right: 40px; text-align: right; }
 
-        .telemetry-row {
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 15px;
-        }
+        .telemetry-row { display: flex; flex-direction: column; }
         .wing-left .telemetry-row { align-items: flex-start; }
         .wing-right .telemetry-row { align-items: flex-end; }
 
-        .data-label {
-            font-family: var(--font-display);
-            font-size: 0.65rem;
-            color: var(--dim);
-            letter-spacing: 1px;
-            margin-bottom: 2px;
-        }
-        .data-value {
-            font-size: 1.1rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-shadow: var(--hud-glow);
-        }
+        .data-label { font-family: var(--font-display); font-size: 0.65rem; opacity: 0.7; letter-spacing: 1px; margin-bottom: 2px; }
+        .data-value { font-size: 1.1rem; font-weight: 700; letter-spacing: 1px; }
 
-        /* --- THE 4 CORNER VECTORS --- */
+        /* Gateway Vectors */
         .vector-node {
-            position: absolute;
-            width: 280px;
-            padding: 15px 20px;
-            background: rgba(0, 0, 0, 0.8);
-            border: var(--border-hud);
-            cursor: pointer;
-            z-index: 30;
-            transition: all 0.2s ease-out;
-            overflow: hidden;
+            position: absolute; width: 280px; padding: 15px 20px;
+            background: var(--bg); border: var(--border-strict);
+            cursor: pointer; z-index: 30; transition: all 0.2s ease-out;
         }
+        .vector-node:hover { background: var(--fg); color: var(--bg); }
         
-        /* Interactive Bracket Hover */
-        .vector-node::before, .vector-node::after {
-            content: ''; position: absolute; width: 10px; height: 10px; transition: all 0.2s ease;
-        }
-        .vector-node::before { top: 0; left: 0; border-top: 1px solid var(--fg); border-left: 1px solid var(--fg); }
-        .vector-node::after { bottom: 0; right: 0; border-bottom: 1px solid var(--fg); border-right: 1px solid var(--fg); }
-        
-        .vector-node:hover {
-            border-color: var(--fg);
-            box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.1);
-        }
-        .vector-node:hover::before { width: 100%; height: 100%; }
-        .vector-node:hover::after { width: 100%; height: 100%; }
-
-        /* Absolute Corner Anchoring */
         .vec-tl { top: 80px; left: 350px; }
         .vec-tr { top: 80px; right: 350px; text-align: right; }
         .vec-bl { bottom: 80px; left: 350px; }
         .vec-br { bottom: 80px; right: 350px; text-align: right; }
 
-        .vec-id {
-            font-size: 0.6rem;
-            color: var(--dim);
-            margin-bottom: 4px;
-        }
-        .vec-title {
-            font-family: var(--font-display);
-            font-size: 0.95rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
+        .vec-id { font-size: 0.6rem; opacity: 0.7; margin-bottom: 4px; }
+        .vector-node:hover .vec-id { color: var(--bg); }
+        .vec-title { font-family: var(--font-display); font-size: 0.95rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
 
-        /* --- THE APERTURE IRIS (CENTER DIAL) --- */
+        /* Center Stage Layout */
         .center-stage {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 480px;
-            height: 480px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 15;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 480px; height: 480px; display: flex; align-items: center; justify-content: center; z-index: 15;
         }
 
-        /* Structural Rings */
-        .dial-ring {
-            position: absolute;
-            border-radius: 50%;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-        .ring-outer { width: 100%; height: 100%; border: 1px dashed rgba(255, 255, 255, 0.3); animation: rotateSlow 60s linear infinite; }
-        .ring-mid { width: 88%; height: 88%; border: 1px solid rgba(255, 255, 255, 0.4); }
-        .ring-inner { width: 75%; height: 75%; border: 2px solid var(--fg); box-shadow: 0 0 30px rgba(255, 255, 255, 0.1) inset; }
+        .dial-axis { position: absolute; background: rgba(255, 255, 255, 0.3); }
+        .axis-x { width: 100%; height: 1px; top: 50%; }
+        .axis-y { width: 1px; height: 100%; left: 50%; }
 
-        /* The Void/Iris */
+        .dial-ring { position: absolute; border-radius: 50%; border: var(--border-strict); }
+        .ring-outer { width: 100%; height: 100%; border: 1px dashed rgba(255, 255, 255, 0.5); animation: rotateSlow 60s linear infinite; }
+        .ring-mid { width: 88%; height: 88%; }
+        .ring-inner { width: 75%; height: 75%; border-width: 2px; }
+
+        /* --- UNIQUE APERTURE SKIN OVERRIDES --- */
+        
         .iris-aperture {
-            position: absolute;
-            width: 73%;
-            height: 73%;
-            border-radius: 50%;
-            background: #000;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: absolute; width: 73%; height: 73%; border-radius: 50%;
+            background: #000; overflow: hidden; display: flex; align-items: center; justify-content: center;
             transition: all 1.2s cubic-bezier(0.7, 0, 0.3, 1);
         }
 
         .starfield {
-            position: absolute;
-            width: 200%;
-            height: 200%;
+            position: absolute; width: 200%; height: 200%;
             background-image: 
                 radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)),
                 radial-gradient(1.5px 1.5px at 50px 80px, rgba(255,255,255,0.8), rgba(0,0,0,0)),
                 radial-gradient(1px 1px at 90px 150px, rgba(255,255,255,0.9), rgba(0,0,0,0)),
                 radial-gradient(2px 2px at 160px 120px, rgba(255,255,255,0.6), rgba(0,0,0,0)),
                 radial-gradient(1px 1px at 200px 40px, rgba(255,255,255,0.9), rgba(0,0,0,0));
-            background-repeat: repeat;
-            background-size: 250px 250px;
-            animation: rotateSlow 120s linear infinite reverse;
-            z-index: 1;
+            background-repeat: repeat; background-size: 250px 250px;
+            animation: rotateSlow 120s linear infinite reverse; z-index: 1;
         }
 
         .rotating-q {
-            font-family: var(--font-display);
-            font-size: 160px;
-            font-weight: 400;
-            color: var(--fg);
-            z-index: 2;
-            animation: spinY 4s linear infinite;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-            transform-style: preserve-3d;
+            font-family: var(--font-display); font-size: 160px; font-weight: 400;
+            color: var(--fg); z-index: 2; animation: spinY 4s linear infinite; transform-style: preserve-3d;
         }
 
-        /* Connective Crosshairs (Center Stage) */
-        .dial-axis {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.2);
-        }
-        .axis-x { width: 100%; height: 1px; top: 50%; }
-        .axis-y { width: 1px; height: 100%; left: 50%; }
-
-        /* --- ANIMATIONS & BREACH STATE --- */
+        /* Animations */
         @keyframes rotateSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes spinY { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
 
-        body.breach-active .iris-aperture {
-            transform: scale(15);
-            opacity: 0;
-            border-radius: 0;
-        }
-        body.breach-active .rotating-q {
-            animation: spinY 0.1s linear infinite, blurOut 1s forwards;
-        }
-        body.breach-active .vector-node, 
-        body.breach-active .os-wing, 
-        body.breach-active .dial-ring,
-        body.breach-active .sys-header,
-        body.breach-active .sys-footer {
-            opacity: 0;
-            transition: opacity 0.8s ease;
-        }
+        /* Kinetic Breach State Transition */
+        body.breach-active .iris-aperture { transform: scale(15); opacity: 0; border-radius: 0; }
+        body.breach-active .rotating-q { animation: spinY 0.1s linear infinite, blurOut 1s forwards; }
+        body.breach-active .vector-node, body.breach-active .os-wing, body.breach-active .dial-ring,
+        body.breach-active .sys-header, body.breach-active .sys-footer, body.breach-active .crosshair,
+        body.breach-active .geometry-overlay { opacity: 0; transition: opacity 0.8s ease; }
 
-        @keyframes blurOut {
-            0% { filter: blur(0px); opacity: 1; }
-            100% { filter: blur(40px); opacity: 0; }
-        }
+        @keyframes blurOut { 0% { filter: blur(0px); opacity: 1; } 100% { filter: blur(40px); opacity: 0; } }
     </style>
 </head>
 <body>
 
-    <div class="grid-overlay"></div>
-    <div class="scanlines"></div>
-
-    <div class="hud-bracket br-tl"></div>
-    <div class="hud-bracket br-tr"></div>
-    <div class="hud-bracket br-bl"></div>
-    <div class="hud-bracket br-br"></div>
-
+    <div class="crosshair ch-tl"></div>
+    <div class="crosshair ch-tr"></div>
+    <div class="crosshair ch-bl"></div>
+    <div class="crosshair ch-br"></div>
+    
     <div class="sys-header">THE QUADRATURE</div>
     <div class="sys-footer">BASED IN SCIENCE, BATHED IN CULTURE AND BUILT FOR THE DIGITAL AGE.</div>
+
+    <svg class="geometry-overlay">
+        <line x1="490" y1="125" x2="50%" y2="50%" />
+        <line x1="calc(100vw - 490px)" y1="125" x2="50%" y2="50%" />
+        <line x1="490" y1="calc(100vh - 125px)" x2="50%" y2="50%" />
+        <line x1="calc(100vw - 490px)" y1="calc(100vh - 125px)" x2="50%" y2="50%" />
+    </svg>
 
     <aside class="os-wing wing-left">
         <div class="telemetry-row">
             <div class="data-label">SYS.EPOCH.UNIX</div>
-            <div class="data-value" id="wing-unix">0000000000</div>
+            <div class="data-value" id="hud-unix">--</div>
         </div>
         <div class="telemetry-row">
             <div class="data-label">SYS.CIVIL.GREGORIAN</div>
-            <div class="data-value" id="wing-greg">YYYY.MM.DD</div>
+            <div class="data-value" id="hud-greg">--</div>
         </div>
         <div class="telemetry-row">
             <div class="data-label">SYS.CLOCK.UTC</div>
-            <div class="data-value" id="wing-utc">00:00:00</div>
+            <div class="data-value" id="hud-utc">--</div>
         </div>
         <div class="telemetry-row">
             <div class="data-label">SYS.JULIAN.DATE</div>
-            <div class="data-value" id="wing-julian">0000000.00</div>
+            <div class="data-value" id="hud-julian">--</div>
         </div>
         <div class="telemetry-row" style="margin-top: auto;">
-            <div class="data-label" style="color: #ff3333;">SYS.TENSION.IDX</div>
-            <div class="data-value" style="color: #ff3333;">UNRESOLVED</div>
+            <div class="data-label">SYS.TENSION.IDX</div>
+            <div class="data-value" id="hud-tension">--</div>
         </div>
     </aside>
 
     <aside class="os-wing wing-right">
         <div class="telemetry-row">
             <div class="data-label">Q.SSB.ANCHOR</div>
-            <div class="data-value">LOCKED</div>
+            <div class="data-value" id="hud-ssb">--</div>
         </div>
         <div class="telemetry-row">
             <div class="data-label">Q.TRUE.ELLIPSE</div>
-            <div class="data-value" id="wing-qcoord">000.0000°</div>
+            <div class="data-value" id="hud-qcoord">--</div>
         </div>
         <div class="telemetry-row">
             <div class="data-label">Q.ORBIT.VELOCITY</div>
-            <div class="data-value">29.78 KM/S</div>
+            <div class="data-value" id="hud-vel">--</div>
         </div>
         <div class="telemetry-row">
             <div class="data-label">Q.SOLAR.PHASE</div>
-            <div class="data-value" id="wing-phase">CALCULATING</div>
+            <div class="data-value" id="hud-phase">--</div>
         </div>
         <div class="telemetry-row" style="margin-top: auto;">
-            <div class="data-label" style="color: #33ff33;">Q.DELTA.VAR</div>
-            <div class="data-value" id="wing-qdelta" style="color: #33ff33;">+0.0000°</div>
+            <div class="data-label">Q.DELTA.VAR</div>
+            <div class="data-value" id="hud-qdelta">--</div>
         </div>
     </aside>
 
@@ -345,17 +207,14 @@
         <div class="vec-id">[ VECTOR 01 ]</div>
         <div class="vec-title">Personal Quad</div>
     </div>
-    
     <div class="vector-node vec-tr" onclick="initiateBreach('COMMERCIAL QUAD')">
         <div class="vec-id">[ VECTOR 02 ]</div>
         <div class="vec-title">Commercial Quad</div>
     </div>
-    
     <div class="vector-node vec-bl" onclick="initiateBreach('DOCUMENTS/MANUSCRIPTS')">
         <div class="vec-id">[ VECTOR 03 ]</div>
         <div class="vec-title">Docs / Manuscripts</div>
     </div>
-    
     <div class="vector-node vec-br" onclick="initiateBreach('GLOBAL DASHBOARD')">
         <div class="vec-id">[ VECTOR 04 ]</div>
         <div class="vec-title">Global Dashboard</div>
@@ -375,50 +234,28 @@
         </div>
     </div>
 
+    <script src="q-core.js"></script>
+    
     <script>
-        // HUD TELEMETRY ENGINE (Simulated pending q-core.js hook)
-        function calculateJulianDate(date) {
-            const time = date.getTime();
-            return (time / 86400000) + 2440587.5;
-        }
-
-        function renderHUD() {
-            const now = new Date();
-            
-            // Legacy Wing Updates
-            document.getElementById('wing-unix').innerText = Math.floor(now.getTime() / 1000);
-            document.getElementById('wing-greg').innerText = now.toISOString().split('T')[0].replace(/-/g, '.');
-            document.getElementById('wing-utc').innerText = now.toISOString().split('T')[1].substring(0, 8);
-            document.getElementById('wing-julian').innerText = calculateJulianDate(now).toFixed(2);
-            
-            // Q-Wing Updates (Simulated Barycentric Math)
-            const startOfYear = new Date(now.getFullYear(), 0, 1);
-            const days = (now - startOfYear) / (1000 * 60 * 60 * 24);
-            const rawDegree = (days / 365.25) * 360;
-            const delta = Math.sin(rawDegree * (Math.PI / 180)) * 1.5;
-            
-            document.getElementById('wing-qcoord').innerText = rawDegree.toFixed(4) + '°';
-            document.getElementById('wing-qdelta').innerText = (delta > 0 ? '+' : '') + delta.toFixed(4) + '°';
-
-            // Sector logic
-            const sector = Math.floor(rawDegree / 90) + 1;
-            document.getElementById('wing-phase').innerText = `SECTOR ${sector}`;
-            
-            requestAnimationFrame(renderHUD);
-        }
-
-        renderHUD();
-
-        // KINETIC BREACH TRANSITION
         function initiateBreach(targetNode) {
             console.log(`[Q-OS] Initiating Sovereign Handshake. Routing to: ${targetNode}`);
             
             const body = document.body;
             body.classList.add('breach-active');
 
+            // Hardcoded structural paths for future deployment
+            const routeMap = {
+                'PERSONAL QUAD': 'personal.html',
+                'COMMERCIAL QUAD': 'commercial.html',
+                'DOCUMENTS/MANUSCRIPTS': 'docs.html',
+                'GLOBAL DASHBOARD': 'dashboard.html'
+            };
+
             setTimeout(() => {
                 alert(`[SYSTEM TRANSITION] Barycentric Lock Confirmed. Opening ${targetNode}...`);
-                // window.location.href = targetURL;
+                // window.location.href = routeMap[targetNode]; 
+                
+                // For local sandbox reset
                 body.classList.remove('breach-active');
             }, 1200);
         }
