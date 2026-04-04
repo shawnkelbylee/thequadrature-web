@@ -5,11 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>THE QUADRATURE | Quad Aperture</title>
     <style>
-        /* BASE & VOID AESTHETIC */
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;700&family=Orbitron:wght@400;700;900&display=swap');
+
+        /* BASE SOVEREIGN AESTHETIC */
         :root {
             --bg: #000000;
             --fg: #FFFFFF;
-            --font-mono: 'Courier New', Courier, monospace;
+            --font-data: 'JetBrains Mono', monospace;
+            --font-display: 'Orbitron', sans-serif;
             --border-strict: 1px solid #FFFFFF;
         }
 
@@ -23,130 +26,163 @@
         body {
             background-color: var(--bg);
             color: var(--fg);
-            font-family: var(--font-mono);
-            height: 100vh;
+            font-family: var(--font-data);
             width: 100vw;
-            display: flex;
-            flex-direction: column;
+            height: 100vh;
             overflow: hidden;
-        }
-
-        /* HEADER & FOOTER ANCHORS */
-        header, footer {
-            width: 100%;
-            text-align: center;
-            padding: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            z-index: 100;
-            background: var(--bg);
-        }
-
-        header {
-            border-bottom: var(--border-strict);
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        footer {
-            border-top: var(--border-strict);
-            font-size: 0.85rem;
-        }
-
-        /* MAIN ARCHITECTURE */
-        .aperture-grid {
-            flex: 1;
-            display: flex;
             position: relative;
-            width: 100%;
-            height: 100%;
         }
 
-        /* OS WINGS (TELEMETRY) */
-        .os-wing {
-            width: 250px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 2rem 1rem;
-            border-right: var(--border-strict);
-            background: var(--bg);
+        /* --- MICRO-ACCENTS & CROSSHAIRS --- */
+        .crosshair {
+            position: absolute;
+            width: 20px;
+            height: 20px;
             z-index: 10;
         }
+        .ch-tl { top: 15px; left: 15px; border-top: var(--border-strict); border-left: var(--border-strict); }
+        .ch-tr { top: 15px; right: 15px; border-top: var(--border-strict); border-right: var(--border-strict); }
+        .ch-bl { bottom: 15px; left: 15px; border-bottom: var(--border-strict); border-left: var(--border-strict); }
+        .ch-br { bottom: 15px; right: 15px; border-bottom: var(--border-strict); border-right: var(--border-strict); }
 
-        .os-wing.right-wing {
-            border-right: none;
-            border-left: var(--border-strict);
-        }
-
-        .telemetry-block {
-            margin-bottom: 2rem;
-        }
-
-        .telemetry-label {
-            font-size: 0.75rem;
-            opacity: 0.7;
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-        }
-
-        .telemetry-data {
-            font-size: 1.1rem;
-        }
-
-        /* CENTER STAGE & VECTORS */
-        .center-stage {
-            flex: 1;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .vector-panel {
+        .sys-tag {
             position: absolute;
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            opacity: 0.6;
+        }
+        .tag-top { top: 20px; left: 50%; transform: translateX(-50%); }
+        .tag-bot { bottom: 20px; left: 50%; transform: translateX(-50%); }
+
+        /* --- CONNECTIVE GEOMETRY --- */
+        .geometry-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 1;
+        }
+        line {
+            stroke: var(--fg);
+            stroke-width: 1;
+            stroke-dasharray: 4 4;
+            opacity: 0.3;
+        }
+
+        /* --- OS WINGS (TELEMETRY) --- */
+        .os-wing {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
             width: 220px;
-            height: 80px;
-            border: var(--border-strict);
             display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            cursor: pointer;
-            background: var(--bg);
-            transition: all 0.2s ease-in-out;
+            flex-direction: column;
+            gap: 2rem;
             z-index: 20;
         }
+        .wing-left { left: 40px; }
+        .wing-right { right: 40px; text-align: right; }
 
-        .vector-panel:hover {
-            background: var(--fg);
-            color: var(--bg);
+        .telemetry-block {
+            display: flex;
+            flex-direction: column;
+        }
+        .wing-left .telemetry-block { border-left: 2px solid var(--fg); padding-left: 10px; }
+        .wing-right .telemetry-block { border-right: 2px solid var(--fg); padding-right: 10px; }
+
+        .tel-label {
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+        .tel-data {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        .tel-sub {
+            font-size: 0.55rem;
+            opacity: 0.5;
+            margin-top: 2px;
         }
 
-        /* VECTOR POSITIONS */
-        .vec-tl { top: 15%; left: 10%; }
-        .vec-tr { top: 15%; right: 10%; }
-        .vec-bl { bottom: 15%; left: 10%; }
-        .vec-br { bottom: 15%; right: 10%; }
-
-        /* THE IRIS (CENTER DIAL) */
-        .iris-container {
-            position: relative;
-            width: 350px;
-            height: 350px;
-            border-radius: 50%;
+        /* --- THE FOUR GATEWAY VECTORS --- */
+        .gateway-vector {
+            position: absolute;
+            width: 260px;
+            height: 90px;
             border: var(--border-strict);
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 20;
+            transition: all 0.3s ease;
+        }
+        .gateway-vector:hover {
+            background: var(--fg);
+            color: var(--bg);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Absolute Corner Anchoring */
+        .vec-tl { top: 80px; left: 320px; }
+        .vec-tr { top: 80px; right: 320px; }
+        .vec-bl { bottom: 80px; left: 320px; }
+        .vec-br { bottom: 80px; right: 320px; }
+
+        .vec-title {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .vec-status {
+            font-size: 0.6rem;
+            margin-top: 5px;
+            opacity: 0.7;
+        }
+        .gateway-vector:hover .vec-status { opacity: 1; color: var(--bg); }
+
+        /* --- THE APERTURE IRIS (CENTER DIAL) --- */
+        .center-stage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 450px;
+            height: 450px;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
             z-index: 15;
-            cursor: pointer;
-            transition: transform 2.5s cubic-bezier(0.8, 0, 0.2, 1), opacity 2s ease-in;
+        }
+
+        .macro-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .ring-1 { width: 100%; height: 100%; border: 1px dashed rgba(255, 255, 255, 0.5); animation: spinZ 120s linear infinite reverse; }
+        .ring-2 { width: 85%; height: 85%; border: var(--border-strict); }
+        .ring-3 { width: 70%; height: 70%; border-width: 2px; }
+
+        .iris-core {
+            position: absolute;
+            width: 65%;
+            height: 65%;
+            border-radius: 50%;
+            overflow: hidden;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 40px rgba(255, 255, 255, 0.1);
+            transition: all 1.5s cubic-bezier(0.8, 0, 0.2, 1);
         }
 
         .starfield {
@@ -154,219 +190,183 @@
             width: 200%;
             height: 200%;
             background-image: 
-                radial-gradient(2px 2px at 40px 60px, #fff, rgba(0,0,0,0)),
-                radial-gradient(2px 2px at 20px 50px, rgba(255,255,255,0.8), rgba(0,0,0,0)),
-                radial-gradient(2px 2px at 30px 100px, rgba(255,255,255,0.9), rgba(0,0,0,0)),
-                radial-gradient(2px 2px at 40px 60px, rgba(255,255,255,0.7), rgba(0,0,0,0)),
-                radial-gradient(2px 2px at 110px 90px, rgba(255,255,255,0.6), rgba(0,0,0,0)),
-                radial-gradient(2px 2px at 190px 150px, rgba(255,255,255,0.9), rgba(0,0,0,0));
+                radial-gradient(1px 1px at 40px 60px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 20px 50px, rgba(255,255,255,0.8), rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 90px 100px, rgba(255,255,255,0.9), rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 150px 160px, rgba(255,255,255,0.6), rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 190px 40px, rgba(255,255,255,0.9), rgba(0,0,0,0));
             background-repeat: repeat;
             background-size: 200px 200px;
-            animation: starDrift 100s linear infinite;
+            animation: spinZ 80s linear infinite;
             z-index: 1;
         }
 
         .rotating-q {
-            font-size: 140px;
-            font-weight: normal;
+            font-family: var(--font-display);
+            font-size: 150px;
+            font-weight: 400;
             z-index: 2;
             color: var(--fg);
-            animation: spinY 4s linear infinite;
+            animation: spinY 5s linear infinite;
             transform-style: preserve-3d;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
         }
 
-        /* ANIMATIONS */
-        @keyframes starDrift {
+        /* --- ANIMATIONS --- */
+        @keyframes spinZ {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
-
         @keyframes spinY {
             from { transform: rotateY(0deg); }
             to { transform: rotateY(360deg); }
         }
 
-        /* KINETIC TRANSITION STATES */
-        .gateway-breach .iris-container {
-            transform: scale(8);
+        /* --- KINETIC TRANSITION STATE (THE BREACH) --- */
+        body.breach-active .iris-core {
+            transform: scale(10);
             opacity: 0;
-            border-width: 0.1px;
         }
-
-        .gateway-breach .rotating-q {
-            animation: spinY 0.2s linear infinite, blurOut 1.5s forwards;
+        body.breach-active .rotating-q {
+            animation: spinY 0.15s linear infinite, blurOut 1.2s forwards;
+        }
+        body.breach-active .gateway-vector, 
+        body.breach-active .os-wing, 
+        body.breach-active .geometry-overlay,
+        body.breach-active .macro-ring {
+            opacity: 0;
+            transition: opacity 1s ease;
         }
 
         @keyframes blurOut {
-            0% { filter: blur(0px); opacity: 1; }
-            100% { filter: blur(25px); opacity: 0; }
+            0% { filter: blur(0px); opacity: 1; transform: scale(1) rotateY(0deg); }
+            100% { filter: blur(30px); opacity: 0; transform: scale(3) rotateY(1080deg); }
         }
 
-        /* MOBILE RESPONSIVE LOGIC */
-        .mobile-stack-container {
-            display: none;
-            flex-direction: column;
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            background: var(--bg);
-            z-index: 50;
-            padding: 2rem;
-            justify-content: center;
-            gap: 1.5rem;
-            opacity: 0;
-            transition: opacity 1s ease-in;
-        }
-
-        @media (max-width: 900px) {
-            .os-wing { display: none; }
-            .vector-panel { display: none; }
-            
-            .center-stage {
-                flex-direction: column;
-            }
-
-            .iris-container {
-                width: 280px;
-                height: 280px;
-            }
-
-            .mobile-stack-container.active {
-                display: flex;
-                opacity: 1;
-            }
-
-            .mobile-vector {
-                width: 100%;
-                padding: 1.5rem;
-                border: var(--border-strict);
-                text-align: center;
-                text-transform: uppercase;
-                background: var(--bg);
-                color: var(--fg);
-            }
-        }
     </style>
 </head>
 <body>
 
-    <header>THE QUADRATURE</header>
+    <div class="crosshair ch-tl"></div>
+    <div class="crosshair ch-tr"></div>
+    <div class="crosshair ch-bl"></div>
+    <div class="crosshair ch-br"></div>
+    
+    <div class="sys-tag tag-top">[ V16.4.0 : SOVEREIGN STATE ]</div>
+    <div class="sys-tag tag-bot">THE QUADRATURE : BARYCENTRIC OBSERVATION</div>
 
-    <main class="aperture-grid" id="main-grid">
+    <svg class="geometry-overlay">
+        <line x1="450" y1="125" x2="50%" y2="50%" />
+        <line x1="calc(100vw - 450px)" y1="125" x2="50%" y2="50%" />
+        <line x1="450" y1="calc(100vh - 125px)" x2="50%" y2="50%" />
+        <line x1="calc(100vw - 450px)" y1="calc(100vh - 125px)" x2="50%" y2="50%" />
+    </svg>
+
+    <aside class="os-wing wing-left">
+        <div class="telemetry-block">
+            <div class="tel-label">Unix Epoch</div>
+            <div class="tel-data" id="tel-unix">0000000000</div>
+            <div class="tel-sub">1D INTEGER DRIFT</div>
+        </div>
+        <div class="telemetry-block">
+            <div class="tel-label">Gregorian Ledger</div>
+            <div class="tel-data" id="tel-greg">YYYY-MM-DD</div>
+            <div class="tel-sub">CIVIL ESTIMATION</div>
+        </div>
+        <div class="telemetry-block">
+            <div class="tel-label">Thermodynamic Friction</div>
+            <div class="tel-data" style="color: #666;">UNRESOLVED</div>
+            <div class="tel-sub">BLIND TO PHYSICS</div>
+        </div>
+    </aside>
+
+    <aside class="os-wing wing-right">
+        <div class="telemetry-block">
+            <div class="tel-label">SSB Telemetry</div>
+            <div class="tel-data">LOCKED</div>
+            <div class="tel-sub">JPL HORIZONS SYNC</div>
+        </div>
+        <div class="telemetry-block">
+            <div class="tel-label">True Ellipse (Pos)</div>
+            <div class="tel-data" id="tel-qcoord">000.0000°</div>
+            <div class="tel-sub">INVARIANT DEGREE</div>
+        </div>
+        <div class="telemetry-block">
+            <div class="tel-label">Q-Delta Variance</div>
+            <div class="tel-data" id="tel-qdelta">+0.0000°</div>
+            <div class="tel-sub">TEMPORAL SYMMETRY LOSS</div>
+        </div>
+    </aside>
+
+    <div class="gateway-vector vec-tl" onclick="initiateBreach('PERSONAL QUAD')">
+        <div class="vec-title">Personal Quad</div>
+        <div class="vec-status">[ NODE 01 - ACTIVE ]</div>
+    </div>
+    
+    <div class="gateway-vector vec-tr" onclick="initiateBreach('COMMERCIAL QUAD')">
+        <div class="vec-title">Commercial Quad</div>
+        <div class="vec-status">[ NODE 02 - ENTERPRISE ]</div>
+    </div>
+    
+    <div class="gateway-vector vec-bl" onclick="initiateBreach('DOCUMENTS / MANUSCRIPTS')">
+        <div class="vec-title">Docs / Manuscripts</div>
+        <div class="vec-status">[ THE ETERNAL NOW ]</div>
+    </div>
+    
+    <div class="gateway-vector vec-br" onclick="initiateBreach('GLOBAL DASHBOARD')">
+        <div class="vec-title">Global Dashboard</div>
+        <div class="vec-status">[ SYSTEMS OVERVIEW ]</div>
+    </div>
+
+    <div class="center-stage">
+        <div class="macro-ring ring-1"></div>
+        <div class="macro-ring ring-2"></div>
+        <div class="macro-ring ring-3"></div>
         
-        <aside class="os-wing left-wing">
-            <div class="telemetry-block">
-                <div class="telemetry-label">Legacy Epoch</div>
-                <div class="telemetry-data" id="tel-unix">0000000000</div>
-            </div>
-            <div class="telemetry-block">
-                <div class="telemetry-label">Gregorian Date</div>
-                <div class="telemetry-data" id="tel-greg">YYYY-MM-DD</div>
-            </div>
-            <div class="telemetry-block">
-                <div class="telemetry-label">Civil Drift</div>
-                <div class="telemetry-data">UNRESOLVED</div>
-            </div>
-        </aside>
-
-        <section class="center-stage" id="center-stage">
-            
-            <div class="vector-panel vec-tl" onclick="initiateBreach('PERSONAL QUAD')">Personal Quad</div>
-            <div class="vector-panel vec-tr" onclick="initiateBreach('COMMERCIAL QUAD')">Commercial Quad</div>
-            
-            <div class="iris-container" id="quad-iris" onclick="handleMobileTap()">
-                <div class="starfield"></div>
-                <div class="rotating-q">Q</div>
-            </div>
-
-            <div class="vector-panel vec-bl" onclick="initiateBreach('DOCUMENTS/MANUSCRIPTS')">Docs / Manuscripts</div>
-            <div class="vector-panel vec-br" onclick="initiateBreach('GLOBAL DASHBOARD')">Global Dashboard</div>
-
-            <div class="mobile-stack-container" id="mobile-stack">
-                <div class="mobile-vector" onclick="initiateBreach('PERSONAL QUAD')">Personal Quad</div>
-                <div class="mobile-vector" onclick="initiateBreach('COMMERCIAL QUAD')">Commercial Quad</div>
-                <div class="mobile-vector" onclick="initiateBreach('DOCUMENTS/MANUSCRIPTS')">Docs / Manuscripts</div>
-                <div class="mobile-vector" onclick="initiateBreach('GLOBAL DASHBOARD')">Global Dashboard</div>
-            </div>
-
-        </section>
-
-        <aside class="os-wing right-wing">
-            <div class="telemetry-block">
-                <div class="telemetry-label">Barycentric Anchor</div>
-                <div class="telemetry-data">LOCKED</div>
-            </div>
-            <div class="telemetry-block">
-                <div class="telemetry-label">True Ellipse (Q-Coord)</div>
-                <div class="telemetry-data" id="tel-qcoord">000.0000°</div>
-            </div>
-            <div class="telemetry-block">
-                <div class="telemetry-label">Q-Delta Variance</div>
-                <div class="telemetry-data" id="tel-qdelta">+0.0000°</div>
-            </div>
-        </aside>
-
-    </main>
-
-    <footer>Based in Science, Bathed in Culture and Built for the Digital Age.</footer>
+        <div class="iris-core">
+            <div class="starfield"></div>
+            <div class="rotating-q">Q</div>
+        </div>
+    </div>
 
     <script>
-        // TELEMETRY SIMULATION LOOP
-        function updateTelemetry() {
+        // CORE RENDER LOOP: SIMULATED TELEMETRY FOR GATEWAY
+        function renderGatewayTelemetry() {
             const now = new Date();
             
-            // Legacy Wing
+            // Legacy Data
             document.getElementById('tel-unix').innerText = Math.floor(now.getTime() / 1000);
             document.getElementById('tel-greg').innerText = now.toISOString().split('T')[0];
             
-            // Q-Wing (Simulated Barycentric Math for Visuals)
+            // Simulated Barycentric Data (Visual Placeholder pending Core Engine Hook)
             const startOfYear = new Date(now.getFullYear(), 0, 1);
             const days = (now - startOfYear) / (1000 * 60 * 60 * 24);
             const rawDegree = (days / 365.25) * 360;
-            const delta = Math.sin(rawDegree * (Math.PI / 180)) * 1.5; // Simulated Keplerian Smear
+            const delta = Math.sin(rawDegree * (Math.PI / 180)) * 1.5; 
             
             document.getElementById('tel-qcoord').innerText = rawDegree.toFixed(4) + '°';
             document.getElementById('tel-qdelta').innerText = (delta > 0 ? '+' : '') + delta.toFixed(4) + '°';
             
-            requestAnimationFrame(updateTelemetry);
+            requestAnimationFrame(renderGatewayTelemetry);
         }
 
-        updateTelemetry();
+        renderGatewayTelemetry();
 
-        // KINETIC TRANSITION PROTOCOL
-        function initiateBreach(destination) {
-            const grid = document.getElementById('main-grid');
+        // KINETIC BREACH PROTOCOL
+        function initiateBreach(targetNode) {
+            console.log(`[Q-OS] Initiating Sovereign Handshake. Routing to: ${targetNode}`);
             
-            // Engage the Kinetic Blur and Iris Retraction
-            grid.classList.add('gateway-breach');
+            // Trigger the CSS Kinetic Blur & Retraction
+            document.body.classList.add('breach-active');
 
-            // Log routing intent
-            console.log(`[Q-OS] Rounting to: ${destination}`);
-
-            // Transition delay (simulating routing after blur completes)
+            // Delay for animation completion before theoretical redirect
             setTimeout(() => {
-                alert(`[SYSTEM TRANSITION] Routing to ${destination}...`);
-                // window.location.href = routeMap[destination];
+                alert(`[SYSTEM TRANSITION] Barycentric Lock Confirmed. Opening ${targetNode}...`);
+                // window.location.href = routeMap[targetNode];
                 
-                // Reset for demo purposes
-                grid.classList.remove('gateway-breach');
-            }, 2000);
-        }
-
-        // MOBILE STACK REVEAL
-        function handleMobileTap() {
-            if(window.innerWidth <= 900) {
-                const iris = document.getElementById('quad-iris');
-                const stack = document.getElementById('mobile-stack');
-                
-                iris.style.opacity = '0';
-                setTimeout(() => {
-                    iris.style.display = 'none';
-                    stack.classList.add('active');
-                }, 500);
-            }
+                // Reset for continuous testing
+                document.body.classList.remove('breach-active');
+            }, 1800);
         }
     </script>
 </body>
